@@ -10,3 +10,4 @@ module CMS
   autoload :FormBuilder,   'cms/form_builder'
 end
 
+Cms = CMS
