@@ -9,5 +9,3 @@ module CMS
   autoload :ViewTags,      'cms/view_tags'
   autoload :FormBuilder,   'cms/form_builder'
 end
-
-Cms = CMS

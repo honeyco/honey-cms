@@ -1,6 +1,8 @@
 module CMS::Configuration
+  extend self
+
   def data
-    @data = YAML.load(File.read(Rails.root.join 'config/cms.yml'))
+    @data ||= YAML.load(load_yaml_string_data)
   end
 
   def scoped_types options
@@ -36,5 +38,13 @@ module CMS::Configuration
     end
   end
 
-  extend self
+  def pages
+    data['pages'].keys
+  end
+
+  private
+  
+  def load_yaml_string_data
+    File.read(Rails.root.join 'config/cms.yml')
+  end
 end

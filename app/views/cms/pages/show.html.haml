@@ -1,0 +1,4 @@
+.cms-page{class: "cms-#{@page}-page"}
+  = cms_page_area :"cms_#{@page}_page" do
+    %h1= @page.capitalize
+  

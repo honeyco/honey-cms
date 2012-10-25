@@ -1,4 +1,4 @@
-require 'cms/generators/base'
+require 'generators/cms/base'
 
 module CMS
   module Generators

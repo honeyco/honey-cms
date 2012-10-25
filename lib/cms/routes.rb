@@ -8,7 +8,11 @@ class CMS::Routes < SimpleDelegator
         resources type.model_name.route_key
       end
 
-      resources :topic_datas, :community_maps, :downtowns
+      yield if block_given?
+    end
+
+    CMS::Configuration.pages.each do |page|
+      get page => "cms/pages#show", page: page.dup, as: "cms_#{page}"
     end
   end
 end
