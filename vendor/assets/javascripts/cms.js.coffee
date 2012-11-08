@@ -1,3 +1,6 @@
+#= require codemirror
+#= require codemirror/xml
+
 class window.HtmlEditor extends Backbone.View
   events:
     'click a[href=#edit]': 'showEditor'

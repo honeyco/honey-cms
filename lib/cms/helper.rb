@@ -21,36 +21,47 @@ module CMS::Helper
     end
   end
 
+
   def cms_page_area name, &block
     page_area = if area = CMS::PageArea.find_by_name(name) then area else CMS::PageArea.new({name: name}, without_protection: true) end
 
-    content_tag :div, role: 'html-editor' do
-      out = content_tag(:div, class: 'cms-page-area', role: 'display') do
-        if page_area.content.present? && !page_area.default
-          content = page_area.content
-        elsif block_given?
-          content = capture(&block)
-          page_area.content = ''.concat(content)
-          page_area.save!
+    if admin?
+      content_tag :div, role: 'html-editor' do
+        out = content_tag(:div, class: 'cms-page-area', role: 'display') do
+          display  = ''.html_safe
+          display << cms_page_area_edit_link if admin?
+          display << render_cms_page_area_content(page_area, &block)
         end
 
-        display  = ''.html_safe
-        display << cms_page_area_edit_link if admin?
-        display << content_tag(:div, class: 'content') do
-          cms_content_parse(content) if content.present?
+        out << content_tag(:div, role: 'editor') do
+          form_for([:cms, page_area], format: 'json', remote: true) do |f|
+            form  = f.hidden_field(:name)
+            form << f.hidden_field(:content, class: 'content')
+            form << f.actions(save: 'done')
+          end
         end
       end
-
-      out << content_tag(:div, role: 'editor') do
-        form_for([:cms, page_area], format: 'json', remote: true) do |f|
-          form  = f.hidden_field(:name)
-          form << f.hidden_field(:content, class: 'content')
-          form << f.actions(save: 'done')
-        end
+    else
+      content_tag :div, class: 'cms-page-area' do
+        render_cms_page_area_content(page_area, &block)
       end
     end
   rescue Exception => e
     if Rails.env.production? then '' else raise e end
+  end
+
+  def render_cms_page_area_content page_area, &block
+    if page_area.content.present? && !page_area.default
+      content = page_area.content
+    elsif block_given?
+      content = capture(&block)
+      page_area.content = ''.concat(content)
+      page_area.save!
+    end
+
+    content_tag(:div, class: 'content') do
+      cms_content_parse(content) if content.present?
+    end
   end
 
   def cms_page_area_edit_link
