@@ -39,7 +39,9 @@ module CMS::Configuration
   end
 
   def pages
-    data['pages'].keys
+    data['pages'].map do |route, page_config|
+      CMS::Page.new route.dup, HashWithIndifferentAccess.new(page_config)
+    end
   end
 
   private

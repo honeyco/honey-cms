@@ -12,7 +12,11 @@ class CMS::Routes < SimpleDelegator
     end
 
     CMS::Configuration.pages.each do |page|
-      get page => "cms/pages#show", page: page.dup, as: "cms_#{page}"
+      if page.editable?
+        get page.route => 'cms/pages#show', page: page.action, as: "cms_#{page.action}"
+      else
+        get page.route => 'cms/pages#static_page', page: page.action, as: "cms_#{page.action}"
+      end
     end
   end
 end
