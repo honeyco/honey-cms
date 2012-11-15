@@ -17,6 +17,7 @@ class CMS::ViewTags
 
   def parse content, opts = {}
     setup(opts)
+    # content.gsub(/\xA0/u, ' ')
     content.gsub(/\{\{image [^}}]+\}\}/) do |tag|
       str, name, size = tag.match(/\{\{image (\w+) (\w+)\}\}/).to_a
       cms_image(name, size)
