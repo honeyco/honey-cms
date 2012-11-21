@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module CMS::Helper
   def cms_file name, size = false
     if file = CMS::FileUpload.find_by_name(name) then return file end
