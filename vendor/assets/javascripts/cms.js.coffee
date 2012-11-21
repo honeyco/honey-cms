@@ -1,5 +1,6 @@
 #= require codemirror
 #= require codemirror/xml
+#= require epiceditor
 
 class window.HtmlEditor extends Backbone.View
   events:
