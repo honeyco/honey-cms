@@ -5,9 +5,14 @@ class CMS::Attribute
     @name = name
     @format = format
     @options = options
-    @attr_options = {
-      # null: false
-    }
+    @attr_options = if self.format.boolean?
+      {
+        null: false,
+        default: false
+      }
+    else
+      {}
+    end
   end
 
   def format
@@ -76,7 +81,7 @@ class CMS::Attribute
 
   def reference_to
     if reference?
-      @reference_to ||= CMS::Configuration.types.find{|t| t.name == @options['reference_to']}
+      @reference_to ||= CMS::Configuration.types.find{ |t| t.name == @options['reference_to'] }
     end
   end
 

@@ -71,6 +71,7 @@ module CMS::Helper
   end
 
   def cms_content_parse content
+    content = content.gsub(' ', ' ')
     CMS::ViewTags.instance.parse content, context: self
   end
 end
