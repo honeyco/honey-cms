@@ -1,8 +1,11 @@
 class CMS::Page
-  attr_reader :route, :options
+  attr_reader :name, :route, :options
 
   def initialize route, options
-    @options = options
+    @options = options.reverse_merge({
+      editable: true
+    })
+    @name = route
     @route = (options[:route] || route).dup
   end
 
