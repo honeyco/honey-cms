@@ -127,10 +127,10 @@ module CMS::FormBuilder::Fields
   end
 
   def actions options = {}
-    options.reverse_merge! save: 'Save', saving: 'Saving...', class: 'form-actions'
+    options.reverse_merge! save: 'Save', saving: 'Saving...', class: 'form-actions', save_class: 'btn btn-primary'
     @template.content_tag(:div, class: options.delete(:class)) do
       actions = ''.html_safe
-      actions << submit(options[:save], disable_with: options[:saving], class: 'btn btn-primary')
+      actions << submit(options[:save], disable_with: options[:saving], class: options[:save_class])
       actions << status
     end
   end
