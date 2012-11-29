@@ -8,25 +8,25 @@ module CMS::Helper
   def cms_file name, size = false
     if file = CMS::FileUpload.find_by_name(name) then return file end
     opts = {name: name}
-    opts[:description] = (size.sub('x', ' by ') << ' pixels')
+    opts[:description] = (size.sub('x', ' by ') << ' pixels') if size
     CMS::FileUpload.create(opts, without_protection: true)
   end
 
   def cms_image name, size = false, width = '', height = ''
     width, height = size.split('x') if size
     image = cms_file(name, size)
+    style = if size then "width: #{width}px ; height: #{height}px" else '' end
 
     if image.file?
-      image_tag image.file.url, class: 'cms-image', style: "width: #{width}px ; height: #{height}px"
+      image_tag image.file.url, class: 'cms-image', style: style
     else
       if current_user && current_user.role.admin?
-        link_to(name, edit_cms_file_upload_path(image), class: 'cms-image missing-cms-image', style: "width: #{width}px ; height: #{height}px ")
+        link_to(name, edit_cms_file_upload_path(image), class: 'cms-image missing-cms-image', style: style)
       else
-        content_tag :div, name, class: 'cms-image missing-cms-image', style: "width: #{width}px ; height: #{height}px"
+        content_tag :div, name, class: 'cms-image missing-cms-image', style: style
       end
     end
   end
-
 
   def cms_page_area name, options = {}, &block
     page_area = if area = CMS::PageArea.find_by_name(name) then area else CMS::PageArea.new({name: name}, without_protection: true) end
