@@ -2,7 +2,11 @@ module CMS::Configuration
   extend self
 
   def data
-    @data ||= YAML.load(load_yaml_string_data)
+    @data ||= if yaml_string_data.present?
+      YAML.load(yaml_string_data)
+    else
+      default_empty_data
+    end
   end
 
   def scoped_types options
@@ -16,6 +20,7 @@ module CMS::Configuration
   def types
     if defined?(@types) then return @types end
 
+    # raise data['content_types'].inspect
     @types = data['content_types'].map do |name, config|
       CMS::Type.new(name, config.delete('attributes'), config)
     end
@@ -45,8 +50,24 @@ module CMS::Configuration
   end
 
   private
-  
-  def load_yaml_string_data
-    File.read(Rails.root.join 'config/cms.yml')
+
+  def default_empty_data
+    {
+      'content_types' => [],
+      'pages' => []
+    }
   end
+
+  def _load_yaml_string_data
+    File.read(Rails.root.join 'config/cms.yml')
+  rescue Errno::ENOENT
+    nil
+  end
+
+  def _memoize_yaml_string_data
+    return @_memoize_yaml_string_data if defined?(@_memoize_yaml_string_data)
+    @_memoize_yaml_string_data = _load_yaml_string_data
+  end
+
+  alias yaml_string_data _memoize_yaml_string_data
 end
