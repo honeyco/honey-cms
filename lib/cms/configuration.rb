@@ -3,7 +3,7 @@ module CMS::Configuration
 
   def data
     @data ||= if yaml_string_data.present?
-      YAML.load(yaml_string_data)
+      YAML.load(yaml_string_data).reverse_merge(default_empty_data)
     else
       default_empty_data
     end

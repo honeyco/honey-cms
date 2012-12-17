@@ -2,6 +2,12 @@ require 'cms/inflections'
 
 module CMS
   class Engine < ::Rails::Engine
-    # stubbed for assets.. ?
+    initializer 'cms.markdown' do |app|
+      ::Markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML,
+        autolink: true,
+        space_after_headers: true,
+        superscript: true,
+        tables: true)
+    end
   end
 end
