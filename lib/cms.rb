@@ -9,4 +9,5 @@ module CMS
   autoload :ViewTags,      'cms/view_tags'
   autoload :FormBuilder,   'cms/form_builder'
   autoload :Page,          'cms/page'
+  autoload :Template,      'cms/template'
 end

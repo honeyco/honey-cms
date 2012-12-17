@@ -72,7 +72,7 @@ class CMS::Attribute
   end
 
   def inject_options
-    "".tap { |s| @attr_options.each { |k,v| s << ", :#{k} => #{v.inspect}" } }
+    CMS::Template.inject_options(@attr_options)
   end
 
   def inject_index_options

@@ -11,7 +11,7 @@ class CMS::<%= @name %> < ActiveRecord::Base
   attr_accessible <%= @type.accessible_attributes.map {|a| ":#{a.field_name}" }.sort.join(', ') %>
 <% if @type.orderable? -%>
   include CMS::Orderable
-  orderable(:<%= @type.order_attribute.name %>)
+  orderable(:<%= @type.order_attribute.name %><%= @type.order_options %>)
 <% end -%>
 <% @type.file_attributes.each do |attribute| -%>
   mount_uploader :<%= attribute.name %>, CMS::Uploader

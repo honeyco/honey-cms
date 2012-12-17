@@ -2,13 +2,18 @@ module CMS::Orderable
   extend ActiveSupport::Concern
 
   def order_scope
-    self.class
+    if self.class.order_scope && (scoped = send(self.class.order_scope))
+      scoped.send(self.class.model_name.collection)
+    else
+      self.class
+    end
   end
 
   module ClassMethods
-    def orderable name
+    def orderable name, options
       default_scope order(name)
       after_save :"order_#{name}"
+      if options[:order_scope] then order_scope(options[:order_scope]) end
 
       define_method :"order_#{name}" do
         order_scope.where("#{name} >= #{send(name)}").where("id != #{id}").select(:id).select(name).inject(send(name)) do |i, record|
@@ -19,6 +24,10 @@ module CMS::Orderable
           record.update_column name, i ; i + 1
         end
       end
+    end
+
+    def order_scope scope = false
+      if scope then @order_scope = scope else @order_scope end
     end
   end
 end

@@ -19,7 +19,7 @@ module CMS
           template 'type_controller.rb', "app/controllers/cms/#{@name.collection}_controller.rb"
           template 'type_model.rb',      "app/models/cms/#{@name.element}.rb"
 
-          %w(index new show edit).each do |view|
+          %w(index new show edit _fields).each do |view|
             template "views/#{view}.html.haml", "app/views/cms/#{@name.collection}/#{view}.html.haml"
           end
         end

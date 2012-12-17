@@ -34,6 +34,10 @@ class CMS::Type
     orderable_attributes.first
   end
 
+  def order_options
+    CMS::Template.inject_options(order_attribute.options)
+  end
+
   def to_s
     name
   end
