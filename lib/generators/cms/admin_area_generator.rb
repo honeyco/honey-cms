@@ -17,7 +17,10 @@ module CMS
         CMS::Configuration.scoped_types(options).each do |type|
           @name = (@type = type).model_name
           template 'type_controller.rb', "app/controllers/cms/#{@name.collection}_controller.rb"
-          template 'type_model.rb',      "app/models/cms/#{@name.element}.rb"
+
+          if @type.options[:model]
+            template 'type_model.rb', "app/models/cms/#{@name.element}.rb"
+          end
 
           %w(index new show edit _fields).each do |view|
             template "views/#{view}.html.haml", "app/views/cms/#{@name.collection}/#{view}.html.haml"

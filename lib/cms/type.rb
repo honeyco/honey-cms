@@ -6,7 +6,8 @@ class CMS::Type
   def initialize name, attributes, options = {}
     @name = name
     @attributes = attributes
-    @options = options.symbolize_keys.merge(timestamps: true, indexes: true)
+    @options = options.symbolize_keys.merge(timestamps: true, indexes: true, model: true)
+    @options.merge!(@options.delete(:options).symbolize_keys) if @options[:options].present?
     @references = []
   end
 
