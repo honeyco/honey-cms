@@ -1,4 +1,5 @@
 require 'cms/inflections'
+require 'redcarpet'
 
 module CMS
   class Engine < ::Rails::Engine
