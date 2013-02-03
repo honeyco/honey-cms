@@ -28,7 +28,7 @@ class CMS::BaseController < ApplicationController
 
   def create
     @record = subject.new(params[subject.model_name.element])
-    @record.author = current_user
+    @record.author = current_user if @record.respond_to?(:author=)
     @record.save
     set_element_variable
     respond_with @record
