@@ -10,6 +10,7 @@ module CMS
         if options[:only].present?
           migration_template 'migration.rb', "db/migrate/create_#{options[:only].underscore.pluralize}"
         else
+          @migration_types = CMS::Configuration.scoped_types(options)
           migration_template 'migration.rb', 'db/migrate/create_cms'
         end
       end

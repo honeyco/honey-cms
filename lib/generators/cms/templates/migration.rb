@@ -1,10 +1,11 @@
 class <%= migration_class_name %> < ActiveRecord::Migration
   def change
-<% CMS::Configuration.scoped_types(options).each do |type| -%>
+<% @migration_types.each do |type| -%>
     create_table :<%= type.model_name.collection %> do |t|
 <% type.attributes.each do |attribute| -%>
       t.<%= attribute.migration_type %> :<%= attribute.name %><%= attribute.inject_options %>
 <% end -%>
+      t.belongs_to :author
 <% if type.options[:timestamps] -%>
       t.timestamps
 <% end -%>

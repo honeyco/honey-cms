@@ -1,3 +1,5 @@
+require 'kaminari'
+
 class CMS::BaseController < ApplicationController
   before_filter :admin!
   before_filter :set_active
@@ -25,7 +27,9 @@ class CMS::BaseController < ApplicationController
   end
 
   def create
-    @record = subject.create(params[subject.model_name.element])
+    @record = subject.new(params[subject.model_name.element])
+    @record.author = current_user
+    @record.save
     set_element_variable
     respond_with @record
   end

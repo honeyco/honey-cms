@@ -27,10 +27,11 @@ class window.HtmlEditor extends Backbone.View
 jQuery ($) ->
   new HtmlEditor {el} for el in $('[role=html-editor]')
 
+
+
   $('body.cms form textarea').each ->
     $container = $('<div class="epiceditor-container">')
     $textarea = $(this).hide().after($container)
-    console.log $textarea
 
     editor = new EpicEditor
       container: $container[0]
