@@ -55,7 +55,7 @@ class CMS::BaseController < ApplicationController
   protected
 
   def respond_with object
-    super [:cms, object]
+    super :cms, object
   end
 
   def find_record
