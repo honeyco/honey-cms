@@ -8,7 +8,7 @@ module CMS
         autolink: true,
         space_after_headers: true,
         superscript: true,
-        tables: true
+        tables: true,
         hard_wrap: true)
     end
   end
