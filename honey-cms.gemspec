@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'honey-cms'
-  s.version     = '0.4.5'
+  s.version     = '0.4.6'
   s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'CMS'
   s.description = 'Some CMS functionality'

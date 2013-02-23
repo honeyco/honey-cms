@@ -17,7 +17,7 @@ class CMS::<%= @name %> < ActiveRecord::Base
   mount_uploader :<%= attribute.name %>, CMS::Uploader
 <% end -%>
 
-  belongs_to :author, model_name: 'User'
+  belongs_to :author, class_name: 'User'
 
   def self.name
     '<%= @name %>'
