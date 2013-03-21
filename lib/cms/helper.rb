@@ -33,7 +33,13 @@ module CMS::Helper
     options[:editable] = true unless options.key?(:editable)
 
     if admin? && options[:editable]
-      content_tag :div, role: 'html-editor' do
+      role = if options[:format] == 'markdown'
+        'markdown-editor'
+      else
+        'html-editor'
+      end
+
+      content_tag :div, role: role do
         out = content_tag(:div, class: 'cms-page-area', role: 'display') do
           display  = ''.html_safe
           display << cms_page_area_edit_link if admin?
