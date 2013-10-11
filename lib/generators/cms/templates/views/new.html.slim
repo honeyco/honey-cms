@@ -1,0 +1,5 @@
+.panel-heading: .panel-title: h5 New <%= @name.human.downcase %>
+
+.panel-body
+  = form_for @<%= @name.element %>, url: cms_<%= @name.collection %>_path, html: {class: 'form-horizontal'} do |f|
+    = render partial: 'fields', locals: { f: f }

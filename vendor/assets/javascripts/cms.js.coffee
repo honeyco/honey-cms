@@ -46,7 +46,7 @@ class window.MarkdownEditor extends HtmlEditor
     @$('[role=editor] .content').initializeEpicEditor()
     @$('[role=editor]').hide().css 'visibility', 'visible'
 
-jQuery ($) ->
+jQuery.turboLoad = (fn) ->
   console.log $('[role=html-editor]')
   new HtmlEditor     {el} for el in $('[role=html-editor]')
   new MarkdownEditor {el} for el in $('[role=markdown-editor]')

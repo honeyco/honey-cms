@@ -1,0 +1,42 @@
+doctype html
+html
+  head
+    = stylesheet_link_tag 'cms', media: 'all'
+    - if Rails.application.assets.find_asset('cms_additions.css').present?
+      = stylesheet_link_tag 'cms_additions', media: 'all'
+    = javascript_include_tag 'application'
+    - if Rails.application.assets.find_asset('cms_additions.js').present?
+      = javascript_include_tag 'cms_additions', media: 'all'
+    = stylesheet_link_tag 'codemirror'
+    = javascript_include_tag 'cms'
+    = csrf_meta_tags
+
+  body.cms class="#{if defined?(subject) then subject.name.underscore.dasherize end}"
+    .navbar.navbar-default.navbar-fixed-top.main-navigation
+      .container
+        .navbar-header
+          button.navbar-toggle type="button" data-toggle="collapse" data-target=".navbar-collapse"
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+
+        .navbar-collapse.collapse
+          ul.nav.navbar-nav
+            li= link_to 'Home', root_path
+          ul.nav.navbar-nav.navbar-right
+            li= link_to 'Sign out', session_path, method: 'delete', class: 'session'
+
+    .container
+      = render partial: 'layouts/flash', locals: { flash: flash }
+
+      .row
+        .col-md-3
+          .list-group
+            .list-group-item: h5 CMS
+            - CMS::Configuration.types.each do |type|
+              a.list-group-item class="#{if defined?(subject) && type.subject == subject.name then 'active' end}" href=send("cms_#{type.model_name.collection}_path")
+                i.icon-chevron-right
+                = type.model_name.human.pluralize
+
+        .col-md-9: .panel.panel-default= yield

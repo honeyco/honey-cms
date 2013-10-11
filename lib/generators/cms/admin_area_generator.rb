@@ -23,7 +23,7 @@ module CMS
           end
 
           %w(index new show edit _fields).each do |view|
-            template "views/#{view}.html.haml", "app/views/cms/#{@name.collection}/#{view}.html.haml"
+            template "views/#{view}.html.slim", "app/views/cms/#{@name.collection}/#{view}.html.slim"
           end
         end
       end

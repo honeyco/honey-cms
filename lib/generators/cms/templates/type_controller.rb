@@ -1,4 +1,4 @@
-class CMS::<%= @name.pluralize %>Controller < CMS::BaseController
+class CMS::<%= @name.to_s.pluralize %>Controller < CMS::BaseController
   helper_method :subject
 
   protected
@@ -6,4 +6,9 @@ class CMS::<%= @name.pluralize %>Controller < CMS::BaseController
   def subject
     CMS::<%= @name %>
   end
+
+  def <%= @name.singular %>_params
+    params.require(:<%= @name.singular %>).permit(<%= @type.accessible_attributes.map {|a| ":#{a.field_name}" }.sort.join(', ') %>)
+  end
+  alias :subject_params :<%= @name.singular %>_params
 end

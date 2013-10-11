@@ -8,7 +8,7 @@ class CMS::<%= @name %> < ActiveRecord::Base
   has_many :<%= type.model_name.collection %>, class_name: 'CMS::<%= type %>'
 <% end -%>
 <% end -%>
-  attr_accessible <%= @type.accessible_attributes.map {|a| ":#{a.field_name}" }.sort.join(', ') %>
+
 <% if @type.orderable? -%>
   include CMS::Orderable
   orderable(:<%= @type.order_attribute.name %><%= @type.order_options %>)
