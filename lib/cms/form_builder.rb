@@ -71,6 +71,10 @@ module CMS::FormBuilder::Fields
     field :string, *args
   end
 
+  def file *args
+    field :file, *args
+  end
+
   def search *args
     field :search, *args
   end
@@ -253,6 +257,8 @@ module CMS::FormBuilder::Fields
     case type
     when :string, :location
       :text_field
+    when :file
+      :file_field
     when :search
       :search_field
     when :text
