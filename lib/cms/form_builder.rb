@@ -1,15 +1,18 @@
 class CMS::FormBuilder < ActionView::Helpers::FormBuilder ; end
 
 module CMS::FormBuilder::Fields
+  LABEL_WIDTH = 'col-lg-2'
+  FIELD_WIDTH = 'col-lg-4'
+
   def radio name, *args
     args = _apply_field_defaults(args)
     options = args.extract_options!
     values = args
     field_wrapper :radio, name do
       out = ''.html_safe
-      out.concat label(name, class: 'control-label') if options[:label]
+      out.concat label(name, class: "#{LABEL_WIDTH} control-label") if options[:label]
 
-      value_div = @template.content_tag(:div, class: 'controls radio') do
+      value_div = @template.content_tag(:div, class: "#{FIELD_WIDTH} radio") do
         values.map do |value|
           @template.content_tag :span, class: 'value' do
             if value.is_a? Array
@@ -155,7 +158,7 @@ module CMS::FormBuilder::Fields
   end
 
   def field_wrapper type, name, options = {}
-    classes = "field #{type} #{name.to_s.dasherize} control-group"
+    classes = "field #{type} #{name.to_s.dasherize} form-group"
     classes << options[:classes] if options[:classes]
     classes << ' error' if object.errors.include? name
     options.merge! class: classes
@@ -174,6 +177,7 @@ module CMS::FormBuilder::Fields
 
     input_options = {}
     input_args = []
+    input_classes = options[:class].try(:split, ' ') || []
 
     unless options[:autocomplete].nil?
       options.delete(:autocomplete)
@@ -185,7 +189,7 @@ module CMS::FormBuilder::Fields
     end
 
     unless options[:hidden].nil?
-      input_options[:class] = 'hidden' if options[:hidden] == true
+      input_classes << 'hidden' if options[:hidden] == true
     end
 
     unless options[:required].nil?
@@ -198,8 +202,7 @@ module CMS::FormBuilder::Fields
 
     out.concat options[:prepend] if options[:prepend]
 
-
-    label_html = label(name, options[:label], class: 'control-label')
+    label_html = label(name, options[:label], class: "#{LABEL_WIDTH} control-label")
 
     out.concat label_html if options[:label] && options[:label_first]
 
@@ -209,7 +212,10 @@ module CMS::FormBuilder::Fields
       out.concat help_html
     end
 
-    out.concat(@template.content_tag(:div, class: "controls #{type}") do
+    input_classes << 'form-control'
+    input_options[:class] = input_classes.join(' ')
+
+    out.concat(@template.content_tag(:div, class: "#{FIELD_WIDTH} #{type}") do
       merged_input_args = input_args << input_options
       controls = send(_field_types(type), name, *merged_input_args)
       controls.concat @template.content_tag(:div, options[:help_block], class: 'help-block') if options[:help_block].present?
