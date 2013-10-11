@@ -1,14 +1,5 @@
 class CMS::FormBuilder < ActionView::Helpers::FormBuilder ; end
 
-ActionView::Base.field_error_proc = Proc.new do |html, instance|
-  if html =~ /<label/
-    html
-  else
-    message = instance.error_message.map{|m| "#{instance.method_name.humanize} #{m}"}.join(', ')
-    "#{html}<div class=\"help-inline\">#{message}</div>".html_safe
-  end
-end
-
 module CMS::FormBuilder::Fields
   def radio name, *args
     args = _apply_field_defaults(args)
@@ -16,19 +7,20 @@ module CMS::FormBuilder::Fields
     values = args
     field_wrapper :radio, name do
       out = ''.html_safe
-      out.concat label(name) if options[:label]
+      out.concat label(name, class: 'control-label') if options[:label]
 
-      value_div = @template.content_tag(:span, class: 'values') do
+      value_div = @template.content_tag(:div, class: 'controls radio') do
         values.map do |value|
           @template.content_tag :span, class: 'value' do
             if value.is_a? Array
-              radio_button(name, value[1]) + label(name, value[0], value: value[1])
+              radio_button(name, value[1].html_safe) + label(name, value[0].html_safe, value: value[1])
             else
               radio_button(name, value) + label(name, value, value: value)
             end
           end
         end.join("\n").html_safe
       end
+
       out.concat value_div
     end
   end
@@ -97,6 +89,10 @@ module CMS::FormBuilder::Fields
 
   def hidden *args
     field :hidden, *_apply_default_options(args, label: false, wrap_field: false)
+  end
+
+  def choices attribute, choices, *args
+    field :choices, *_apply_default_options(args << attribute,  choices: choices)
   end
 
   # slider is weird enough that we will not use the default field helper.
@@ -173,6 +169,7 @@ module CMS::FormBuilder::Fields
     out = ''.html_safe
 
     input_options = {}
+    input_args = []
 
     unless options[:autocomplete].nil?
       options.delete(:autocomplete)
@@ -180,7 +177,7 @@ module CMS::FormBuilder::Fields
     end
 
     unless options[:placeholder].nil?
-      input_options[:placeholder] = options.delete(:placeholder)
+      input_options[:placeholder] = if (placeholder = options.delete(:placeholder)) == true then name.to_s.humanize else placeholder end
     end
 
     unless options[:hidden].nil?
@@ -189,6 +186,10 @@ module CMS::FormBuilder::Fields
 
     unless options[:required].nil?
       input_options[:required] = 'required' if options[:required] == true
+    end
+
+    unless options[:choices].nil?
+      input_args << options[:choices]
     end
 
     out.concat options[:prepend] if options[:prepend]
@@ -200,12 +201,13 @@ module CMS::FormBuilder::Fields
 
     if options[:help_text]
       help_text = send("#{name}_help_text")
-      help_html = "<a class=\"tipsy\" title=\"#{help_text}\" href=\"#\">learn more</a>".html_safe
+      help_html = %Q(<a class="tipsy" title="#{help_text}" href="#">learn more</a>).html_safe
       out.concat help_html
     end
 
-    out.concat(@template.content_tag(:div, class: 'controls') do
-      controls = send(_field_types(type), name, input_options)
+    out.concat(@template.content_tag(:div, class: "controls #{type}") do
+      merged_input_args = input_args << input_options
+      controls = send(_field_types(type), name, *merged_input_args)
       controls.concat @template.content_tag(:div, options[:help_block], class: 'help-block') if options[:help_block].present?
       controls
     end)
@@ -230,7 +232,11 @@ module CMS::FormBuilder::Fields
 
   # apply the default options for all fields.
   def _apply_field_defaults args
-    _apply_default_options args, label: true, wrap_field: true, label_first: true
+    _apply_default_options args, field_options.reverse_merge(label: true, wrap_field: true, label_first: true)
+  end
+
+  def field_options
+    options[:fields] || {}
   end
 
   # single use method for parsing options provided by the +field+ helper
@@ -261,6 +267,8 @@ module CMS::FormBuilder::Fields
       :radio_button
     when :boolean, :check
       :check_box
+    when :choices
+      :select
     end
   end
 
@@ -273,4 +281,13 @@ end
 
 class CMS::FormBuilder
   include CMS::FormBuilder::Fields
+end
+
+ActionView::Base.field_error_proc = Proc.new do |html, instance|
+  if html =~ /<label/
+    html
+  else
+    message = instance.error_message.map{|m| "#{instance.instance_variable_get(:@method_name).humanize} #{m}"}.join(', ')
+    "#{html}<div class=\"help-inline\">#{message}</div>".html_safe
+  end
 end
